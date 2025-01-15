@@ -22,7 +22,7 @@
 
 import { useState } from 'react';
 // import './Home.css';
-import Weather from '../components/Weather';
+import Weather from '../components';
 
 const Home = () => {
   const [weatherData, setWeatherData] = useState(null);

@@ -209,7 +209,7 @@ const Weather = () => {
         lng: response.data.currentWeather.lon,
       });
       const activitiesResponse = await axios.get(
-        `https://temperaturetrail.onrender.com/api/activities?city=${city}&weatherCondition=${response.data.currentWeather.conditions}`,
+        `http://localhost:3000/api/activities?city=${city}&weatherCondition=${response.data.currentWeather.conditions}`,
         { withCredentials: true }
       );
       setActivities(activitiesResponse.data.activities);

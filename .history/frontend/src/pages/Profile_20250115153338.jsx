@@ -56,7 +56,7 @@ const Profile = () => {
 
   const handleDeleteSearch = async (searchId) => {
     try {
-      await axios.delete(`https://temperaturetrail.onrender.com/api/search-history/${searchId}`, {
+      await axios.delete(`http://localhost:3000/api/search-history/${searchId}`, {
         withCredentials: true
       });
       setSearchHistory(searchHistory.filter(search => search._id !== searchId));

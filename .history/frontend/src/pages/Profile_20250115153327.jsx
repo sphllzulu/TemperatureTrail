@@ -43,7 +43,7 @@ const Profile = () => {
 
   const handleDeleteFavorite = async (destination) => {
     try {
-      await axios.delete(`https://temperaturetrail.onrender.com/api/favorites/${encodeURIComponent(destination)}`, {
+      await axios.delete(`http://localhost:3000/api/favorites/${encodeURIComponent(destination)}`, {
         withCredentials: true
       });
       setFavorites(favorites.filter(fav => fav.destination !== destination));
@@ -56,7 +56,7 @@ const Profile = () => {
 
   const handleDeleteSearch = async (searchId) => {
     try {
-      await axios.delete(`https://temperaturetrail.onrender.com/api/search-history/${searchId}`, {
+      await axios.delete(`http://localhost:3000/api/search-history/${searchId}`, {
         withCredentials: true
       });
       setSearchHistory(searchHistory.filter(search => search._id !== searchId));

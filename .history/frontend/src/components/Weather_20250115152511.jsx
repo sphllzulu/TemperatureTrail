@@ -199,7 +199,7 @@ const Weather = () => {
   const fetchWeather = async () => {
     try {
       const response = await axios.get(
-        `https://temperaturetrail.onrender.com/api/weather?city=${city}`,
+        `http://localhost:3000/api/weather?city=${city}`,
         { withCredentials: true }
       );
       setWeather(response.data.currentWeather);
@@ -209,7 +209,7 @@ const Weather = () => {
         lng: response.data.currentWeather.lon,
       });
       const activitiesResponse = await axios.get(
-        `https://temperaturetrail.onrender.com/api/activities?city=${city}&weatherCondition=${response.data.currentWeather.conditions}`,
+        `http://localhost:3000/api/activities?city=${city}&weatherCondition=${response.data.currentWeather.conditions}`,
         { withCredentials: true }
       );
       setActivities(activitiesResponse.data.activities);
@@ -224,7 +224,7 @@ const Weather = () => {
   const addToFavorites = async () => {
     try {
       const response = await axios.post(
-        'https://temperaturetrail.onrender.com/api/favorites',
+        'http://localhost:3000/api/favorites',
         { destination: city },
         { withCredentials: true }
       );
@@ -250,7 +250,7 @@ const Weather = () => {
   return (
     <Box sx={{ padding: 3 }}>
 
-<Typography variant="h4" gutterBottom>
+<Typography variant="h" gutterBottom>
          Weather Search
        </Typography>
      

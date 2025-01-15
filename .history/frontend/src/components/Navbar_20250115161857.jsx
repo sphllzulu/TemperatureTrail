@@ -96,7 +96,7 @@ function Navbar() {
               },
             }}
           >
-            Travela
+            Tra
           </Typography>
 
           {/* Navigation Links */}

@@ -96,7 +96,7 @@ function Navbar() {
               },
             }}
           >
-            Travela
+            LOGO
           </Typography>
 
           {/* Navigation Links */}

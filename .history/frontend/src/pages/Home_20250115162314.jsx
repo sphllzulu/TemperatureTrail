@@ -64,7 +64,7 @@ const Home = () => {
             gutterBottom
             sx={{
               fontWeight: 'bold',
-              textShadow: '2px 2px 4px rgba(0,0,0,0.3) ', margin: 10
+              textShadow: '2px 2px 4px rgba(0,0,0,0.3) ',margin
             }}
           >
             Weather-Based Travel Planner

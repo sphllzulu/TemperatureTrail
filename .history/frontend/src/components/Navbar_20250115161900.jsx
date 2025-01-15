@@ -96,7 +96,7 @@ function Navbar() {
               },
             }}
           >
-            Travela
+            Trave
           </Typography>
 
           {/* Navigation Links */}

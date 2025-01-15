@@ -64,7 +64,7 @@ const Home = () => {
             gutterBottom
             sx={{
               fontWeight: 'bold',
-              textShadow: '2px 2px 4px rgba(0,0,0,0.3) ', margin: 10
+              textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
             }}
           >
             Weather-Based Travel Planner
@@ -74,7 +74,7 @@ const Home = () => {
             align="center"
             color="inherit"
             paragraph
-            sx={{ opacity: 0.9, padding: 0.5 }}
+            sx={{ opacity: 0.9 PADD}}
           >
             Plan your adventures with real-time weather insights
           </Typography>

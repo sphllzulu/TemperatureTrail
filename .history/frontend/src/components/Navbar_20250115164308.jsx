@@ -42,7 +42,7 @@ function Navbar() {
   };
 
   const navItems = [
-    // { text: 'Home', path: '/' },
+    { text: 'Home', path: '/' },
     // { text: 'Favourites', path: '/favourites' },
     // { text: 'About', path: '/about' },
     // { text: 'Contact Us', path: '/contact' }

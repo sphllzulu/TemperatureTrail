@@ -15,7 +15,7 @@ const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 const FOURSQUARE_API_KEY=process.env.FOURSQUARE_API_KEY
 
 //middleware
-app.use(cors({ origin: `https://temperaturetrail-2.onrender.com`, credentials: true }));
+app.use(cors({ origin: `http://localhost:5174`, `https://temperaturetrail-2.onrender.com`, credentials: true }));
 app.use(express.json())
 app.use(session({
     //used to encrypt the session

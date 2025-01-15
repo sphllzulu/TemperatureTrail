@@ -261,7 +261,7 @@ app.get('/api/activities', async (req, res) => {
 
   
   // Get search history
-app.get('/api/search-history', async (req, res) => {
+app.get('/api/search-history',authMiddleware, async (req, res) => {
     const userId = req.session.userId;
   
     try {
@@ -277,7 +277,7 @@ app.get('/api/search-history', async (req, res) => {
   });
 
   // Get favorites
-app.get('/api/favorites', async (req, res) => {
+app.get('/api/favorites',authMiddleware, async (req, res) => {
     const userId = req.session.userId;
   
     try {

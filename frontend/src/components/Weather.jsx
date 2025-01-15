@@ -333,7 +333,6 @@
 
 // export default Weather;
 
-
 import { useState } from 'react';
 import axios from 'axios';
 import {
@@ -349,6 +348,7 @@ import {
   Container,
   useTheme,
   alpha,
+  useMediaQuery,
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -358,6 +358,7 @@ import Map from './Map';
 
 const Weather = () => {
   const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm')); // Check for small screens
   const [city, setCity] = useState('');
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
@@ -419,7 +420,7 @@ const Weather = () => {
     <Container maxWidth="lg">
       <Box
         sx={{
-          padding: 4,
+          padding: isSmallScreen ? 2 : 4, // Reduce padding on small screens
           minHeight: '100vh',
           background: `linear-gradient(to bottom, ${alpha(theme.palette.primary.light, 0.1)}, ${alpha(
             theme.palette.background.default,
@@ -428,7 +429,7 @@ const Weather = () => {
         }}
       >
         <Typography
-          variant="h3"
+          variant={isSmallScreen ? 'h4' : 'h3'} // Adjust font size for small screens
           gutterBottom
           align="center"
           sx={{
@@ -442,15 +443,16 @@ const Weather = () => {
         </Typography>
 
         <Paper
-          elevation={3}
+          elevation={isSmallScreen ? 1 : 3} // Reduce elevation on small screens
           sx={{
             p: 2,
             mb: 4,
             display: 'flex',
+            flexDirection: isSmallScreen ? 'column' : 'row', // Stack vertically on small screens
             gap: 2,
             alignItems: 'center',
             justifyContent: 'center',
-            background: alpha(theme.palette.background.paper, 0.8),
+            background: alpha(theme.palette.background.paper, isSmallScreen ? 0.7 : 0.8), // Reduce opacity on small screens
             backdropFilter: 'blur(8px)',
             borderRadius: 2,
           }}
@@ -492,10 +494,10 @@ const Weather = () => {
 
         {weather && (
           <Card
-            elevation={4}
+            elevation={isSmallScreen ? 1 : 4} // Reduce elevation on small screens
             sx={{
               mb: 4,
-              background: alpha(theme.palette.background.paper, 0.9),
+              background: alpha(theme.palette.background.paper, isSmallScreen ? 0.7 : 0.9), // Reduce opacity on small screens
               backdropFilter: 'blur(8px)',
               borderRadius: 2,
               transition: 'transform 0.3s ease-in-out',
@@ -506,7 +508,7 @@ const Weather = () => {
           >
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                <Typography variant="h4" sx={{ fontWeight: 600 }}>
+                <Typography variant={isSmallScreen ? 'h5' : 'h4'} sx={{ fontWeight: 600 }}> {/* Adjust font size */}
                   {weather.city}
                 </Typography>
                 <IconButton
@@ -520,7 +522,7 @@ const Weather = () => {
               </Box>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4}>
-                  <Typography variant="h5" sx={{ fontWeight: 500 }}>
+                  <Typography variant={isSmallScreen ? 'h6' : 'h5'} sx={{ fontWeight: 500 }}> {/* Adjust font size */}
                     {weather.temperature}°C
                   </Typography>
                   <Typography variant="subtitle1" color="textSecondary">
@@ -528,7 +530,7 @@ const Weather = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                  <Typography variant="h5" sx={{ fontWeight: 500 }}>
+                  <Typography variant={isSmallScreen ? 'h6' : 'h5'} sx={{ fontWeight: 500 }}> {/* Adjust font size */}
                     {weather.conditions}
                   </Typography>
                   <Typography variant="subtitle1" color="textSecondary">
@@ -536,7 +538,7 @@ const Weather = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                  <Typography variant="h5" sx={{ fontWeight: 500 }}>
+                  <Typography variant={isSmallScreen ? 'h6' : 'h5'} sx={{ fontWeight: 500 }}> {/* Adjust font size */}
                     {weather.humidity}%
                   </Typography>
                   <Typography variant="subtitle1" color="textSecondary">
@@ -554,7 +556,7 @@ const Weather = () => {
         {forecast.length > 0 && (
           <Box sx={{ mb: 4 }}>
             <Typography
-              variant="h4"
+              variant={isSmallScreen ? 'h5' : 'h4'} // Adjust font size
               gutterBottom
               sx={{
                 fontWeight: 600,
@@ -568,10 +570,10 @@ const Weather = () => {
               {forecast.map((day, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Card
-                    elevation={3}
+                    elevation={isSmallScreen ? 1 : 3} // Reduce elevation on small screens
                     sx={{
                       height: '100%',
-                      background: alpha(theme.palette.background.paper, 0.9),
+                      background: alpha(theme.palette.background.paper, isSmallScreen ? 0.7 : 0.9), // Reduce opacity on small screens
                       backdropFilter: 'blur(8px)',
                       transition: 'transform 0.2s ease-in-out',
                       '&:hover': {
@@ -580,7 +582,7 @@ const Weather = () => {
                     }}
                   >
                     <CardContent>
-                      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                      <Typography variant={isSmallScreen ? 'subtitle1' : 'h6'} sx={{ fontWeight: 600, mb: 2 }}> {/* Adjust font size */}
                         {day.date}
                       </Typography>
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>

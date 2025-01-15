@@ -115,9 +115,9 @@ const Login = () => {
           Login
         </Button>
         <Typography variant="body2" color="text.secondary">
-            Don't have an account?{' '}
-            <Link to="/register" style={{ color: 'inherit', textDecoration: 'underline' }}>
-              Register here
+            Already have an account?{' '}
+            <Link to="/login" style={{ color: 'inherit', textDecoration: 'underline' }}>
+              Login here
             </Link>
           </Typography>
       </Box>

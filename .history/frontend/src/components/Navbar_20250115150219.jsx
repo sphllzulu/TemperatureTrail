@@ -35,10 +35,8 @@ function Navbar() {
   ];
 
   const profileMenuItems = [
-    { text: 'Login/Sign up', path: '/login' },
+    { text: 'Login/Sign up', path: '/auth' },
     { text: 'History', path: '/history' }
-    
-    
   ];
 
   return (

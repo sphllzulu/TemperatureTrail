@@ -49,12 +49,10 @@
 // export default Login;
 
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, Button, Box, Typography } from '@mui/material';
 
 const Login = () => {
-  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -66,7 +64,6 @@ const Login = () => {
         { withCredentials: true }
       );
       console.log('Logged in:', response.data);
-      navigate('/');
     } catch (error) {
       console.error('Login error:', error);
     }
@@ -114,12 +111,6 @@ const Login = () => {
         <Button variant="contained" color="primary" onClick={handleLogin}>
           Login
         </Button>
-        <Typography variant="body2" color="text.secondary">
-            Don't have an account?{' '}
-            <Link to="/register" style={{ color: 'inherit', textDecoration: 'underline' }}>
-              Register here
-            </Link>
-          </Typography>
       </Box>
     </Box>
   );

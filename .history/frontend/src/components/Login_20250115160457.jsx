@@ -114,12 +114,6 @@ const Login = () => {
         <Button variant="contained" color="primary" onClick={handleLogin}>
           Login
         </Button>
-        <Typography variant="body2" color="text.secondary">
-            Don't have an account?{' '}
-            <Link to="/register" style={{ color: 'inherit', textDecoration: 'underline' }}>
-              Register here
-            </Link>
-          </Typography>
       </Box>
     </Box>
   );

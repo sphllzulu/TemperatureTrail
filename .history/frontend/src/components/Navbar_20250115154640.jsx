@@ -37,8 +37,6 @@ function Navbar() {
   const profileMenuItems = [
     { text: 'Login/Sign up', path: '/login' },
     { text: 'History', path: '/history' }
-    
-    
   ];
 
   return (

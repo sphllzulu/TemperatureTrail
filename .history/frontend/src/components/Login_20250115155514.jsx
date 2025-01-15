@@ -49,14 +49,14 @@
 // export default Login;
 
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, Button, Box, Typography } from '@mui/material';
 
-const Login = () => {
+export const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = async () => {
     try {
@@ -66,36 +66,33 @@ const Login = () => {
         { withCredentials: true }
       );
       console.log('Logged in:', response.data);
-      navigate('/');
+      navigate('/home');
     } catch (error) {
       console.error('Login error:', error);
+      setError(error.response?.data?.message || 'Login failed. Please try again.');
     }
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        padding: 2,
-      }}
-    >
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '100vh',
+      padding: 2,
+    }}>
       <Typography variant="h4" gutterBottom>
         Login
       </Typography>
-      <Box
-        component="form"
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          width: '100%',
-          maxWidth: 400,
-        }}
-      >
+      {error && <Alert severity="error" sx={{ mb: 2, width: '100%', maxWidth: 400 }}>{error}</Alert>}
+      <Box component="form" sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        width: '100%',
+        maxWidth: 400,
+      }}>
         <TextField
           label="Username"
           variant="outlined"
@@ -114,15 +111,17 @@ const Login = () => {
         <Button variant="contained" color="primary" onClick={handleLogin}>
           Login
         </Button>
-        <Typography variant="body2" color="text.secondary">
+        <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <Typography variant="body2" color="text.secondary">
             Don't have an account?{' '}
             <Link to="/register" style={{ color: 'inherit', textDecoration: 'underline' }}>
               Register here
             </Link>
           </Typography>
+        </Box>
       </Box>
     </Box>
   );
 };
 
-export default Login;
+// export default Login;

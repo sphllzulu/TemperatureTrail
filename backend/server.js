@@ -30,7 +30,7 @@ app.use(session({
       }),
     cookie: {
         //only send cookie over https in production
-        secure: process.env.NODE_ENV === 'production',
+        secure: false,
         //session lasts for 24hrs
         maxAge: 1000 * 60 * 60 * 24 // 24 hours
       }

@@ -60,34 +60,17 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-        const response = await axios.post(
-            'https://temperaturetrail.onrender.com/api/auth/login',
-            { username, password },
-            { withCredentials: true }
-        );
-        
-        console.log('Login response:', response.data);
-        
-        // Wait a brief moment to ensure session is saved
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // Verify session before navigating
-        const sessionCheck = await axios.get(
-            'https://temperaturetrail.onrender.com/api/auth/test-session',
-            { withCredentials: true }
-        );
-        
-        console.log('Session check:', sessionCheck.data);
-        
-        if (sessionCheck.data.isAuthenticated) {
-            navigate('/');
-        } else {
-            console.error('Session not established after login');
-        }
+      const response = await axios.post(
+        'https://temperaturetrail.onrender.com/api/auth/login',
+        { username, password },
+        { withCredentials: true }
+      );
+      console.log('Logged in:', response.data);
+      navigate('/');
     } catch (error) {
-        console.error('Login error:', error);
+      console.error('Login error:', error);
     }
-};
+  };
 
   return (
     <Box

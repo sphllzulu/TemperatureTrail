@@ -29,10 +29,10 @@ app.use(session({
         collectionName: 'sessions'
       }),
     cookie: {
-        //only send cookie over https in production
-        secure: process.env.NODE_ENV === 'production',
-        //session lasts for 24hrs
-        maxAge: 1000 * 60 * 60 * 24 // 24 hours
+      sameSite: 'none',
+      secure: true, 
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 
       }
 }))
 
@@ -118,6 +118,20 @@ app.post('/api/auth/login', async(req,res) => {
       console.error('Login failed:', err);
       res.status(400).json({error: err.message});
   }
+});
+
+app.get('/api/auth/test-session', (req, res) => {
+  console.log('Session check:', {
+      sessionID: req.sessionID,
+      userId: req.session.userId,
+      session: req.session
+  });
+  
+  res.json({
+      isAuthenticated: !!req.session.userId,
+      sessionID: req.sessionID,
+      userId: req.session.userId
+  });
 });
 
 app.post('/api/auth/logout',(req,res)=>{

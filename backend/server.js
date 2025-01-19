@@ -21,7 +21,7 @@ app.use(session({
     //used to encrypt the session
     secret:process.env.SESSION_SECRET,
     //dont save session if nothing changed
-    resave:false,
+    resave:true,
     //dont create session until something is stored
     saveUninitialized: false,
     store:MongoStore.create({
@@ -80,24 +80,45 @@ app.post('/api/auth/register',async(req,res)=>{
     }
 })
 
-app.post('/api/auth/login',async(req,res)=>{
-    try{
-        const {username,password}=req.body;
-        //first find user record with the username provided by user
-        const user=await User.findOne({username})
-        //compare that password with the one on the database
-        if(!user || !(await bcrypt.compare(password,user.password))){
-            throw new Error('Invalid credentials')
-        }
-        req.session.userId=user._id;
-        res.json({message:'Logged in',user})
-    }
-        catch(err){
-            res.status(400).json({error:err.message});
-        }
+app.post('/api/auth/login', async(req,res) => {
+  try {
+      const {username, password} = req.body;
+      const user = await User.findOne({username});
+      
+      if(!user || !(await bcrypt.compare(password, user.password))) {
+          throw new Error('Invalid credentials');
+      }
+      
+      // Set the userId in session
+      req.session.userId = user._id;
+      
+      // Save session explicitly
+      await new Promise((resolve, reject) => {
+          req.session.save((err) => {
+              if (err) reject(err);
+              else resolve();
+          });
+      });
 
-    }
-);
+      console.log('Login successful:', {
+          sessionID: req.sessionID,
+          userId: req.session.userId,
+          session: req.session
+      });
+
+      res.json({
+          message: 'Logged in',
+          user,
+          debug: {
+              sessionID: req.sessionID,
+              userId: req.session.userId
+          }
+      });
+  } catch(err) {
+      console.error('Login failed:', err);
+      res.status(400).json({error: err.message});
+  }
+});
 
 app.post('/api/auth/logout',(req,res)=>{
     req.session.destroy((err)=>{

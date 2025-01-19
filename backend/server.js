@@ -682,6 +682,10 @@ app.get('/api/activities', async (req, res) => {
       rating: place.rating || 'Not rated',
       photo: place.photos?.[0] ? `${place.photos[0].prefix}300x300${place.photos[0].suffix}` : null,
       url: place.website || `https://foursquare.com/v/${place.fsq_id}`,
+      coordinates: {
+        lat: place.geocodes?.main?.latitude,
+        lng: place.geocodes?.main?.longitude
+      }
     }));
 
     res.json({ activities });

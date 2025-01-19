@@ -30,7 +30,7 @@ app.use(session({
       }),
     cookie: {
         //only send cookie over https in production
-        secure: false,
+        secure: process.env.NODE_ENV === 'production',
         //session lasts for 24hrs
         maxAge: 1000 * 60 * 60 * 24 // 24 hours
       }
@@ -253,7 +253,7 @@ app.get('/api/activities', async (req, res) => {
       res.status(statusCode).json({ 
         error: 'Failed to fetch activities',
         details: errorMessage,
-        // Don't expose API keys in error messages
+       
         source: error.config?.url?.replace(FOURSQUARE_API_KEY, '[REDACTED]')
       });
     }
@@ -261,7 +261,7 @@ app.get('/api/activities', async (req, res) => {
 
   
   // Get search history
-app.get('/api/search-history',authMiddleware, async (req, res) => {
+app.get('/api/search-history', authMiddleware, async (req, res) => {
     const userId = req.session.userId;
   
     try {
@@ -277,7 +277,7 @@ app.get('/api/search-history',authMiddleware, async (req, res) => {
   });
 
   // Get favorites
-app.get('/api/favorites',authMiddleware, async (req, res) => {
+app.get('/api/favorites', authMiddleware, async (req, res) => {
     const userId = req.session.userId;
   
     try {

@@ -30,7 +30,7 @@ app.use(session({
       }),
     cookie: {
       sameSite: 'none',
-      secure: true, 
+      secure: false, 
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000 
       }
@@ -121,17 +121,17 @@ app.post('/api/auth/login', async(req,res) => {
 });
 
 app.get('/api/auth/test-session', (req, res) => {
-  console.log('Session check:', {
-      sessionID: req.sessionID,
-      userId: req.session.userId,
-      session: req.session
-  });
-  
-  res.json({
-      isAuthenticated: !!req.session.userId,
-      sessionID: req.sessionID,
-      userId: req.session.userId
-  });
+    console.log('Session check:', {
+        sessionID: req.sessionID,
+        userId: req.session.userId,
+        session: req.session
+    });
+    
+    res.json({
+        isAuthenticated: !!req.session.userId,
+        sessionID: req.sessionID,
+        userId: req.session.userId
+    });
 });
 
 app.post('/api/auth/logout',(req,res)=>{

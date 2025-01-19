@@ -358,7 +358,7 @@ import Map from './Map';
 
 const Weather = () => {
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm')); // Check for small screens
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [city, setCity] = useState('');
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
@@ -420,41 +420,39 @@ const Weather = () => {
     <Container maxWidth="lg">
       <Box
         sx={{
-          padding: isSmallScreen ? 2 : 4, // Reduce padding on small screens
+          padding: isSmallScreen ? 2 : 4,
           minHeight: '100vh',
-          background: `linear-gradient(to bottom, ${alpha(theme.palette.primary.light, 0.1)}, ${alpha(
-            theme.palette.background.default,
-            0.9
-          )})`,
+          background: 'linear-gradient(135deg, #1e1e2f, #2a2a40)', // Futuristic gradient background
         }}
       >
         <Typography
-          variant={isSmallScreen ? 'h4' : 'h3'} // Adjust font size for small screens
+          variant={isSmallScreen ? 'h4' : 'h3'}
           gutterBottom
           align="center"
           sx={{
             fontWeight: 700,
-            color: theme.palette.primary.main,
+            color: '#ffffff',
             mb: 4,
-            textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+            textShadow: '0 0 10px rgba(255, 255, 255, 0.5)',
           }}
         >
           Weather Search
         </Typography>
 
         <Paper
-          elevation={isSmallScreen ? 1 : 3} // Reduce elevation on small screens
+          elevation={0}
           sx={{
             p: 2,
             mb: 4,
             display: 'flex',
-            flexDirection: isSmallScreen ? 'column' : 'row', // Stack vertically on small screens
+            flexDirection: isSmallScreen ? 'column' : 'row',
             gap: 2,
             alignItems: 'center',
             justifyContent: 'center',
-            background: alpha(theme.palette.background.paper, isSmallScreen ? 0.7 : 0.8), // Reduce opacity on small screens
-            backdropFilter: 'blur(8px)',
+            background: alpha('#ffffff', 0.1), // Transparent white background
+            backdropFilter: 'blur(10px)', // Blur effect
             borderRadius: 2,
+            border: '1px solid rgba(255, 255, 255, 0.1)', // Subtle border
           }}
         >
           <TextField
@@ -471,9 +469,21 @@ const Weather = () => {
               width: '100%',
               maxWidth: 500,
               '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'rgba(255, 255, 255, 0.3)',
+                },
                 '&:hover fieldset': {
                   borderColor: theme.palette.primary.main,
                 },
+                '&.Mui-focused fieldset': {
+                  borderColor: theme.palette.primary.main,
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: 'rgba(255, 255, 255, 0.7)',
+              },
+              '& .MuiInputBase-input': {
+                color: '#ffffff',
               },
             }}
           />
@@ -494,54 +504,51 @@ const Weather = () => {
 
         {weather && (
           <Card
-            elevation={isSmallScreen ? 1 : 4} // Reduce elevation on small screens
+            elevation={0}
             sx={{
               mb: 4,
-              background: alpha(theme.palette.background.paper, isSmallScreen ? 0.7 : 0.9), // Reduce opacity on small screens
-              backdropFilter: 'blur(8px)',
+              background: alpha('#ffffff', 0.1), // Transparent white background
+              backdropFilter: 'blur(10px)', // Blur effect
               borderRadius: 2,
-              transition: 'transform 0.3s ease-in-out',
+              border: '1px solid rgba(255, 255, 255, 0.1)', // Subtle border
+              transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
               '&:hover': {
                 transform: 'translateY(-4px)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
               },
             }}
           >
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                <Typography variant={isSmallScreen ? 'h5' : 'h4'} sx={{ fontWeight: 600 }}> {/* Adjust font size */}
+                <Typography variant={isSmallScreen ? 'h5' : 'h4'} sx={{ fontWeight: 600, color: '#ffffff' }}>
                   {weather.city}
                 </Typography>
-                <IconButton
-                  onClick={addToFavorites}
-                  sx={{
-                    color: isCityInFavorites() ? theme.palette.error.main : theme.palette.primary.main,
-                  }}
-                >
+                <IconButton onClick={addToFavorites} sx={{ color: isCityInFavorites() ? theme.palette.error.main : '#ffffff' }}>
                   {isCityInFavorites() ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                 </IconButton>
               </Box>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4}>
-                  <Typography variant={isSmallScreen ? 'h6' : 'h5'} sx={{ fontWeight: 500 }}> {/* Adjust font size */}
+                  <Typography variant={isSmallScreen ? 'h6' : 'h5'} sx={{ fontWeight: 500, color: '#ffffff' }}>
                     {weather.temperature}°C
                   </Typography>
-                  <Typography variant="subtitle1" color="textSecondary">
+                  <Typography variant="subtitle1" color="rgba(255, 255, 255, 0.7)">
                     Temperature
                   </Typography>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                  <Typography variant={isSmallScreen ? 'h6' : 'h5'} sx={{ fontWeight: 500 }}> {/* Adjust font size */}
+                  <Typography variant={isSmallScreen ? 'h6' : 'h5'} sx={{ fontWeight: 500, color: '#ffffff' }}>
                     {weather.conditions}
                   </Typography>
-                  <Typography variant="subtitle1" color="textSecondary">
+                  <Typography variant="subtitle1" color="rgba(255, 255, 255, 0.7)">
                     Conditions
                   </Typography>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                  <Typography variant={isSmallScreen ? 'h6' : 'h5'} sx={{ fontWeight: 500 }}> {/* Adjust font size */}
+                  <Typography variant={isSmallScreen ? 'h6' : 'h5'} sx={{ fontWeight: 500, color: '#ffffff' }}>
                     {weather.humidity}%
                   </Typography>
-                  <Typography variant="subtitle1" color="textSecondary">
+                  <Typography variant="subtitle1" color="rgba(255, 255, 255, 0.7)">
                     Humidity
                   </Typography>
                 </Grid>
@@ -556,11 +563,11 @@ const Weather = () => {
         {forecast.length > 0 && (
           <Box sx={{ mb: 4 }}>
             <Typography
-              variant={isSmallScreen ? 'h5' : 'h4'} // Adjust font size
+              variant={isSmallScreen ? 'h5' : 'h4'}
               gutterBottom
               sx={{
                 fontWeight: 600,
-                color: theme.palette.primary.main,
+                color: '#ffffff',
                 mb: 3,
               }}
             >
@@ -570,26 +577,29 @@ const Weather = () => {
               {forecast.map((day, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Card
-                    elevation={isSmallScreen ? 1 : 3} // Reduce elevation on small screens
+                    elevation={0}
                     sx={{
                       height: '100%',
-                      background: alpha(theme.palette.background.paper, isSmallScreen ? 0.7 : 0.9), // Reduce opacity on small screens
-                      backdropFilter: 'blur(8px)',
-                      transition: 'transform 0.2s ease-in-out',
+                      background: alpha('#ffffff', 0.1), // Transparent white background
+                      backdropFilter: 'blur(10px)', // Blur effect
+                      borderRadius: 2,
+                      border: '1px solid rgba(255, 255, 255, 0.1)', // Subtle border
+                      transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
                       '&:hover': {
                         transform: 'translateY(-4px)',
+                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
                       },
                     }}
                   >
                     <CardContent>
-                      <Typography variant={isSmallScreen ? 'subtitle1' : 'h6'} sx={{ fontWeight: 600, mb: 2 }}> {/* Adjust font size */}
+                      <Typography variant={isSmallScreen ? 'subtitle1' : 'h6'} sx={{ fontWeight: 600, mb: 2, color: '#ffffff' }}>
                         {day.date}
                       </Typography>
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                        <Typography variant="body1">
+                        <Typography variant="body1" color="#ffffff">
                           Temperature: <strong>{day.temperature}°C</strong>
                         </Typography>
-                        <Typography variant="body1">
+                        <Typography variant="body1" color="#ffffff">
                           Conditions: <strong>{day.conditions}</strong>
                         </Typography>
                         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
@@ -608,7 +618,7 @@ const Weather = () => {
 
         {mapCenter.lat !== 0 && mapCenter.lng !== 0 && (
           <Box sx={{ mt: 4, borderRadius: 2, overflow: 'hidden' }}>
-            <Map center={mapCenter} />
+            <Map center={mapCenter} activities={activities} />
           </Box>
         )}
 
@@ -617,6 +627,12 @@ const Weather = () => {
           autoHideDuration={6000}
           onClose={() => setSnackbarOpen(false)}
           message={snackbarMessage}
+          sx={{
+            '& .MuiSnackbarContent-root': {
+              background: alpha('#1e1e2f', 0.9), // Dark background for snackbar
+              backdropFilter: 'blur(10px)', // Blur effect
+            },
+          }}
         />
       </Box>
     </Container>

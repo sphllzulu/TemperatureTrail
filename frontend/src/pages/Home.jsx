@@ -106,7 +106,6 @@
 // };
 
 // export default Home;
-
 import React, { useState } from 'react';
 import {
   Box,
@@ -124,7 +123,9 @@ import Weather from '../components/Weather';
 // Styled components
 const StyledHeroSection = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(8, 0, 6),
-  background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+  backgroundImage: 'url(/hero.jpg)', // Replace with your image path
+  backgroundSize: 'cover', // Ensure the image covers the entire section
+  backgroundPosition: 'center', // Center the image
   color: 'white',
   marginBottom: theme.spacing(4),
   borderRadius: 0,

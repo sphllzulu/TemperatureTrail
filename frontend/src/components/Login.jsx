@@ -65,12 +65,21 @@ const Login = () => {
         { username, password },
         { withCredentials: true }
       );
+      
+      // Initialize empty favorites array in localStorage if it doesn't exist
+      if (!localStorage.getItem(`favorites_${response.data.user._id}`)) {
+        localStorage.setItem(`favorites_${response.data.user._id}`, JSON.stringify([]));
+      }
+      
+      // Store user ID in localStorage
+      localStorage.setItem('userId', response.data.user._id);
+      
       console.log('Logged in:', response.data);
       navigate('/');
     } catch (error) {
       console.error('Login error:', error);
     }
-  };
+  }
 
   return (
     <Box

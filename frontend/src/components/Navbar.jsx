@@ -50,7 +50,6 @@ function Navbar() {
 
   const profileMenuItems = [
     { text: 'Login/Sign up', path: '/login' },
-    { text: 'Profile', path: '/profile' }
   ];
 
   return (
@@ -58,10 +57,8 @@ function Navbar() {
       <AppBar
         position="fixed"
         sx={{
-          background: `linear-gradient(to right, ${alpha(theme.palette.primary.main, 0.95)}, ${alpha(
-            theme.palette.primary.dark,
-            0.95
-          )})`,
+          background: 'grey',
+          
           backdropFilter: 'blur(8px)',
           boxShadow: `0 4px 30px ${alpha(theme.palette.common.black, 0.1)}`,
           borderBottom: `1px solid ${alpha(theme.palette.common.white, 0.1)}`,

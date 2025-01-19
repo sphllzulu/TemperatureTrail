@@ -476,7 +476,11 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const bcrypt = require('bcrypt');
 const cors = require('cors');
+const User = require('./models/users');
+const MongoStore = require('connect-mongo');
 const axios = require('axios');
 
 const app = express();
@@ -494,6 +498,25 @@ app.use(
 );
 app.use(express.json());
 
+// Session Configuration
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: 'sessions',
+    }),
+    cookie: {
+      secure: process.env.NODE_ENV === 'production', // Only send cookies over HTTPS in production
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Use 'none' in production, 'lax' in development
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24, // 24 hours
+    },
+  })
+);
+
 // Database Connection
 mongoose
   .connect(process.env.MONGO_URI, {
@@ -503,9 +526,47 @@ mongoose
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
+// Auth Routes
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = new User({ username, password });
+    await user.save();
+    req.session.userId = user._id; // Save user ID in session
+    res.status(201).json({ message: 'User registered', user });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new Error('Invalid credentials');
+    }
+    req.session.userId = user._id; // Save user ID in session
+    res.json({ message: 'Logged in', user });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Could not log out' });
+    }
+    res.clearCookie('connect.sid');
+    res.json({ message: 'Logged out' });
+  });
+});
+
 // Weather Routes
 app.get('/api/weather', async (req, res) => {
   const { city } = req.query;
+  const userId = req.session.userId;
 
   if (!city) {
     return res.status(400).json({ error: 'City parameter is required' });
@@ -542,6 +603,25 @@ app.get('/api/weather', async (req, res) => {
     }, {});
 
     const forecast = Object.values(forecastData).slice(0, 7);
+
+    // Save search history for authenticated users
+    if (userId) {
+      await User.findByIdAndUpdate(userId, {
+        $push: {
+          searchHistory: {
+            destination: city,
+            weather: {
+              temperature: currentWeather.temperature,
+              humidity: currentWeather.humidity,
+              conditions: currentWeather.conditions,
+              icon: currentWeather.icon,
+              lat: currentWeather.lat,
+              lon: currentWeather.lon,
+            },
+          },
+        },
+      });
+    }
 
     res.json({ currentWeather, forecast });
   } catch (error) {
@@ -611,6 +691,101 @@ app.get('/api/activities', async (req, res) => {
       error: 'Failed to fetch activities',
       details: error.response?.data?.message || error.message,
     });
+  }
+});
+
+// Search History and Favorites Routes
+app.get('/api/search-history', async (req, res) => {
+  const userId = req.session.userId;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json({ searchHistory: user.searchHistory });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch search history' });
+  }
+});
+
+app.get('/api/favorites', async (req, res) => {
+  const userId = req.session.userId;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json({ favorites: user.favorites });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch favorites' });
+  }
+});
+
+app.post('/api/favorites', async (req, res) => {
+  const { destination } = req.body;
+  const userId = req.session.userId;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    user.favorites.push({ destination, name: user.username });
+    await user.save();
+    res.json({ message: 'Destination added to favorites', favorites: user.favorites });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to add to favorites' });
+  }
+});
+
+app.delete('/api/favorites/:destination', async (req, res) => {
+  const userId = req.session.userId;
+  const { destination } = req.params;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    user.favorites = user.favorites.filter(
+      (fav) => fav.destination.toLowerCase() !== decodeURIComponent(destination).toLowerCase()
+    );
+    await user.save();
+    res.json({ message: 'Favorite removed successfully', favorites: user.favorites });
+  } catch (error) {
+    console.error('Error removing favorite:', error);
+    res.status(500).json({ error: 'Failed to remove favorite' });
+  }
+});
+
+app.delete('/api/search-history/:id', async (req, res) => {
+  const userId = req.session.userId;
+  const { id } = req.params;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    user.searchHistory = user.searchHistory.filter((search) => search._id.toString() !== id);
+    await user.save();
+    res.json({ message: 'Search history entry removed successfully', searchHistory: user.searchHistory });
+  } catch (error) {
+    console.error('Error removing search history entry:', error);
+    res.status(500).json({ error: 'Failed to remove search history entry' });
+  }
+});
+
+app.delete('/api/search-history', async (req, res) => {
+  const userId = req.session.userId;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    user.searchHistory = [];
+    await user.save();
+    res.json({ message: 'Search history cleared successfully', searchHistory: user.searchHistory });
+  } catch (error) {
+    console.error('Error clearing search history:', error);
+    res.status(500).json({ error: 'Failed to clear search history' });
   }
 });
 

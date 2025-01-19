@@ -15,7 +15,7 @@ const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 const FOURSQUARE_API_KEY=process.env.FOURSQUARE_API_KEY
 
 //middleware
-app.use(cors({ origin: [`https://temperaturetrail-2.onrender.com`,`http://localhost:5173`], credentials: true }));
+app.use(cors({ origin: [`https://temperaturetrail-2.onrender.com`,`http://localhost:5173`,`https://temperaturetrail.onrender.com'`], credentials: true }));
 app.use(express.json())
 app.use(session({
     //used to encrypt the session
@@ -261,7 +261,7 @@ app.get('/api/activities', async (req, res) => {
 
   
   // Get search history
-app.get('/api/search-history', async (req, res) => {
+app.get('/api/search-history',authMiddleware, async (req, res) => {
     const userId = req.session.userId;
   
     try {
@@ -277,7 +277,7 @@ app.get('/api/search-history', async (req, res) => {
   });
 
   // Get favorites
-app.get('/api/favorites', async (req, res) => {
+app.get('/api/favorites', authMiddleware, async (req, res) => {
     const userId = req.session.userId;
   
     try {
@@ -391,7 +391,7 @@ app.post('/api/favorites', authMiddleware, async (req, res) => {
 });
 
 // Delete favorite endpoint
-app.delete('/api/favorites/:destination', async (req, res) => {
+app.delete('/api/favorites/:destination', authMiddleware, async (req, res) => {
     const userId = req.session.userId;
     const { destination } = req.params;
   
@@ -418,7 +418,7 @@ app.delete('/api/favorites/:destination', async (req, res) => {
   });
   
   // Delete search history entry endpoint
-  app.delete('/api/search-history/:id', async (req, res) => {
+  app.delete('/api/search-history/:id', authMiddleware, async (req, res) => {
     const userId = req.session.userId;
     const { id } = req.params;
   
@@ -445,7 +445,7 @@ app.delete('/api/favorites/:destination', async (req, res) => {
   });
   
   // Clear all search history endpoint (optional)
-  app.delete('/api/search-history', async (req, res) => {
+  app.delete('/api/search-history', authMiddleware, async (req, res) => {
     const userId = req.session.userId;
   
     try {

@@ -21,7 +21,7 @@ app.use(session({
     //used to encrypt the session
     secret:process.env.SESSION_SECRET,
     //dont save session if nothing changed
-    resave:true,
+    resave:false,
     //dont create session until something is stored
     saveUninitialized: false,
     store:MongoStore.create({
@@ -29,10 +29,10 @@ app.use(session({
         collectionName: 'sessions'
       }),
     cookie: {
-      sameSite: 'none',
-      secure: false, 
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000 
+        //only send cookie over https in production
+        secure: process.env.NODE_ENV === 'production',
+        //session lasts for 24hrs
+        maxAge: 1000 * 60 * 60 * 24 // 24 hours
       }
 }))
 
@@ -48,24 +48,12 @@ mongoose
   //authentication middleware, if session does not contain userId then you get an error
   //otherwise the next operation conitnues
   const authMiddleware = (req, res, next) => {
-    console.log('Auth Middleware:', {
-        sessionID: req.sessionID,
-        userId: req.session.userId,
-        headers: req.headers
-    });
-    
     if (!req.session.userId) {
-        return res.status(401).json({ 
-            error: 'Unauthorized',
-            debug: {
-                sessionExists: !!req.session,
-                sessionID: req.sessionID,
-                hasUserId: !!req.session.userId
-            }
-        });
+      return res.status(401).json({ error: 'Unauthorized' });
     }
     next();
-};
+  };
+
 //auth routes
 app.post('/api/auth/register',async(req,res)=>{
     try{
@@ -80,59 +68,24 @@ app.post('/api/auth/register',async(req,res)=>{
     }
 })
 
-app.post('/api/auth/login', async(req,res) => {
-  try {
-      const {username, password} = req.body;
-      const user = await User.findOne({username});
-      
-      if(!user || !(await bcrypt.compare(password, user.password))) {
-          throw new Error('Invalid credentials');
-      }
-      
-      // Set the userId in session
-      req.session.userId = user._id;
-      
-      // Save session explicitly
-      await new Promise((resolve, reject) => {
-          req.session.save((err) => {
-              if (err) reject(err);
-              else resolve();
-          });
-      });
+app.post('/api/auth/login',async(req,res)=>{
+    try{
+        const {username,password}=req.body;
+        //first find user record with the username provided by user
+        const user=await User.findOne({username})
+        //compare that password with the one on the database
+        if(!user || !(await bcrypt.compare(password,user.password))){
+            throw new Error('Invalid credentials')
+        }
+        req.session.userId=user._id;
+        res.json({message:'Logged in',user})
+    }
+        catch(err){
+            res.status(400).json({error:err.message});
+        }
 
-      console.log('Login successful:', {
-          sessionID: req.sessionID,
-          userId: req.session.userId,
-          session: req.session
-      });
-
-      res.json({
-          message: 'Logged in',
-          user,
-          debug: {
-              sessionID: req.sessionID,
-              userId: req.session.userId
-          }
-      });
-  } catch(err) {
-      console.error('Login failed:', err);
-      res.status(400).json({error: err.message});
-  }
-});
-
-app.get('/api/auth/test-session', (req, res) => {
-    console.log('Session check:', {
-        sessionID: req.sessionID,
-        userId: req.session.userId,
-        session: req.session
-    });
-    
-    res.json({
-        isAuthenticated: !!req.session.userId,
-        sessionID: req.sessionID,
-        userId: req.session.userId
-    });
-});
+    }
+);
 
 app.post('/api/auth/logout',(req,res)=>{
     req.session.destroy((err)=>{

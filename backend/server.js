@@ -15,7 +15,7 @@ const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 const FOURSQUARE_API_KEY=process.env.FOURSQUARE_API_KEY
 
 //middleware
-app.use(cors({ origin: [`https://temperaturetrail-2.onrender.com`,`http://localhost:5173`,`https://temperaturetrail.onrender.com'`], credentials: true }));
+app.use(cors({ origin: [`https://temperaturetrail-2.onrender.com`,`http://localhost:5173`], credentials: true }));
 app.use(express.json())
 app.use(session({
     //used to encrypt the session
@@ -48,12 +48,24 @@ mongoose
   //authentication middleware, if session does not contain userId then you get an error
   //otherwise the next operation conitnues
   const authMiddleware = (req, res, next) => {
+    console.log('Auth Middleware:', {
+        sessionID: req.sessionID,
+        userId: req.session.userId,
+        headers: req.headers
+    });
+    
     if (!req.session.userId) {
-      return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({ 
+            error: 'Unauthorized',
+            debug: {
+                sessionExists: !!req.session,
+                sessionID: req.sessionID,
+                hasUserId: !!req.session.userId
+            }
+        });
     }
     next();
-  };
-
+};
 //auth routes
 app.post('/api/auth/register',async(req,res)=>{
     try{
